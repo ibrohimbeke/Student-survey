@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Life in Hamburg Survey</title>
+  <link rel="stylesheet" href="pico.min.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Student Life in Hamburg Survey</h1>
+    <form id="surveyForm">
+      <input type="hidden" name="ownerName" value="Ibrohim Fattakhiv" />
+
+      <label>
+        Name:
+        <input type="text" name="name" required />
+      </label>
+
+      <label>
+        Age:
+        <input type="number" name="age" required />
+      </label>
+
+      <label>
+        Program:
+        <input type="text" name="program" required />
+      </label>
+
+      <label>
+        Living Situation:
+        <select name="living" required>
+          <option value="dorm">Dorm</option>
+          <option value="shared">Shared Apartment</option>
+          <option value="alone">Alone</option>
+        </select>
+      </label>
+
+      <label>
+        Monthly Budget (EUR):
+        <input type="number" name="budget" required />
+      </label>
+
+      <label>
+        Comments:
+        <textarea name="comments"></textarea>
+      </label>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <h2>Server Response:</h2>
+    <pre id="responseDisplay"></pre>
+  </main>
+
+  <script>
+    document.getElementById("surveyForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const surveyData = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch("https://ue-code.eu/api/survey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(surveyData),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const result = await response.json();
+        document.getElementById("responseDisplay").textContent = JSON.stringify(result, null, 2);
+      } catch (error) {
+        document.getElementById("responseDisplay").textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
+
