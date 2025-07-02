@@ -8,7 +8,18 @@
 </head>
 <body>
   <main class="container">
-    <h1>Submitted Survey Records</h1>
+    <nav>
+      <ul>
+        <li><strong>Student Survey</strong></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">Survey Form</a></li>
+        <li><a href="table.html">All Records</a></li>
+      </ul>
+    </nav>
+
+    <h1>All Submitted Survey Records</h1>
+
     <table id="surveyTable">
       <thead></thead>
       <tbody></tbody>
@@ -16,7 +27,10 @@
   </main>
 
   <script>
-    const columnOrder = ["id", "ownerName", "name", "age", "program", "living", "budget", "comments"];
+    const columnOrder = [
+      "id", "ownerName", "name", "weather", "food", "german", "tourists", "tip",
+      "transport", "services", "social", "library"
+    ];
 
     async function fetchAndDisplaySurveys() {
       try {
@@ -29,11 +43,11 @@
         const thead = table.querySelector("thead");
         const tbody = table.querySelector("tbody");
 
-        // Clear previous data
+        // Clear previous content
         thead.innerHTML = "";
         tbody.innerHTML = "";
 
-        // Header
+        // Header row
         const headerRow = document.createElement("tr");
         columnOrder.forEach(col => {
           const th = document.createElement("th");
@@ -42,23 +56,7 @@
         });
         thead.appendChild(headerRow);
 
-        // Rows
+        // Data rows
         surveys.forEach(survey => {
-          const row = document.createElement("tr");
-          columnOrder.forEach(col => {
-            const td = document.createElement("td");
-            td.textContent = survey[col] ?? "";
-            row.appendChild(td);
-          });
-          tbody.appendChild(row);
-        });
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    }
-
-    window.onload = fetchAndDisplaySurveys;
-  </script>
-</body>
-</html>
+          const row = document.createEl
 
