@@ -58,5 +58,29 @@
 
         // Data rows
         surveys.forEach(survey => {
-          const row = document.createEl
+          const row = document.createElement("tr");
+          columnOrder.forEach(col => {
+            const td = document.createElement("td");
+            const value = survey[col];
 
+            if (Array.isArray(value)) {
+              td.textContent = value.join(", ");
+            } else {
+              td.textContent = value ?? "";
+            }
+
+            row.appendChild(td);
+          });
+          tbody.appendChild(row);
+        });
+
+      } catch (err) {
+        console.error("Error loading survey data:", err);
+        document.getElementById("surveyTable").outerHTML = `<p style="color: red;">Failed to load survey data. Please try again later.</p>`;
+      }
+    }
+
+    window.onload = fetchAndDisplaySurveys;
+  </script>
+</body>
+</html>
