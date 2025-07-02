@@ -3,53 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Life in Hamburg Survey</title>
+  <title>Student Life in Hamburg – Quick Survey</title>
   <link rel="stylesheet" href="pico.min.css" />
 </head>
 <body>
   <main class="container">
-    <h1>Student Life in Hamburg Survey</h1>
+    <nav>
+      <ul>
+        <li><strong>Student Survey</strong></li>
+      </ul>
+      <ul>
+        <li><a href="index.html">Survey Form</a></li>
+        <li><a href="table.html">All Records</a></li>
+      </ul>
+    </nav>
+
+    <h1>Student Life in Hamburg – Quick Survey</h1>
+
     <form id="surveyForm">
       <input type="hidden" name="ownerName" value="Ibrohim Fattakhiv" />
 
       <label>
-        Name:
+        1. What's your first name (or nickname)?
         <input type="text" name="name" required />
       </label>
 
       <label>
-        Age:
-        <input type="number" name="age" required />
-      </label>
-
-      <label>
-        Program:
-        <input type="text" name="program" required />
-      </label>
-
-      <label>
-        Living Situation:
-        <select name="living" required>
-          <option value="dorm">Dorm</option>
-          <option value="shared">Shared Apartment</option>
-          <option value="alone">Alone</option>
+        2. How do you usually deal with Hamburg's weather?
+        <select name="weather" required>
+          <option value="">Select one</option>
+          <option value="layered">Layer up</option>
+          <option value="umbrella">Carry an umbrella (that I always forget)</option>
+          <option value="meh">I just deal with it</option>
         </select>
       </label>
 
-      <label>
-        Monthly Budget (EUR):
-        <input type="number" name="budget" required />
-      </label>
+      <fieldset>
+        <legend>3. What are your go-to meals during the semester?</legend>
+        <label><input type="checkbox" name="food" value="mensa" /> Mensa food</label>
+        <label><input type="checkbox" name="food" value="pizza" /> Frozen pizza</label>
+        <label><input type="checkbox" name="food" value="snacks" /> Snacks and coffee</label>
+        <label><input type="checkbox" name="food" value="cook" /> I actually cook</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. How confident are you with your German?</legend>
+        <label><input type="radio" name="german" value="fluent" required /> Fluent</label>
+        <label><input type="radio" name="german" value="okay" /> Okay</label>
+        <label><input type="radio" name="german" value="menu" /> Menu words only</label>
+        <label><input type="radio" name="german" value="gestures" /> Mostly hand gestures</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>5. How often do you see tourists at the Landungsbrücken and think: "I've been here long enough to give directions"?</legend>
+        <label><input type="radio" name="tourists" value="always" required /> All the time</label>
+        <label><input type="radio" name="tourists" value="sometimes" /> Now and then</label>
+        <label><input type="radio" name="tourists" value="lost" /> Still asking for directions myself</label>
+      </fieldset>
 
       <label>
-        Comments:
-        <textarea name="comments"></textarea>
+        6. One tip you'd give to new students in Hamburg?
+        <input type="text" name="tip" placeholder="Short and sweet" />
       </label>
+
+      <!-- 🔽 NEW QUESTION 1: Transport -->
+      <fieldset>
+        <legend>7. What's your preferred way to get around Hamburg?</legend>
+        <label><input type="radio" name="transport" value="bike" required /> Bike</label>
+        <label><input type="radio" name="transport" value="u-bahn" /> U-Bahn / S-Bahn</label>
+        <label><input type="radio" name="transport" value="bus" /> Bus</label>
+        <label><input type="radio" name="transport" value="walk" /> Walking</label>
+      </fieldset>
+
+      <!-- 🔽 NEW QUESTION 2: Student Services -->
+      <fieldset>
+        <legend>8. What student services have you used?</legend>
+        <label><input type="checkbox" name="services" value="career" /> Career counseling</label>
+        <label><input type="checkbox" name="services" value="mental" /> Mental health support</label>
+        <label><input type="checkbox" name="services" value="housing" /> Housing office</label>
+        <label><input type="checkbox" name="services" value="legal" /> Legal advice</label>
+      </fieldset>
+
+      <!-- 🔽 NEW QUESTION 3: Social Media -->
+      <fieldset>
+        <legend>9. Which social media do you use for student events?</legend>
+        <label><input type="checkbox" name="social" value="instagram" /> Instagram</label>
+        <label><input type="checkbox" name="social" value="whatsapp" /> WhatsApp</label>
+        <label><input type="checkbox" name="social" value="telegram" /> Telegram</label>
+        <label><input type="checkbox" name="social" value="none" /> I don’t follow any</label>
+      </fieldset>
+
+      <!-- 🔽 NEW QUESTION 4: Library -->
+      <fieldset>
+        <legend>10. How often do you visit the university library?</legend>
+        <label><input type="radio" name="library" value="daily" required /> Daily</label>
+        <label><input type="radio" name="library" value="weekly" /> Weekly</label>
+        <label><input type="radio" name="library" value="monthly" /> Monthly</label>
+        <label><input type="radio" name="library" value="never" /> Never</label>
+      </fieldset>
 
       <button type="submit">Submit</button>
     </form>
 
-    <h2>Server Response:</h2>
+    <h3>Response</h3>
     <pre id="responseDisplay"></pre>
   </main>
 
@@ -57,29 +113,38 @@
     document.getElementById("surveyForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(e.target);
-      const surveyData = Object.fromEntries(formData.entries());
+      const form = e.target;
+      const surveyData = {
+        ownerName: "Ibrohim Fattakhiv",
+        name: form.querySelector('input[name="name"]').value,
+        weather: form.querySelector('select[name="weather"]').value,
+        food: Array.from(form.querySelectorAll('input[name="food"]:checked')).map(i => i.value),
+        german: form.querySelector('input[name="german"]:checked')?.value || "",
+        tourists: form.querySelector('input[name="tourists"]:checked')?.value || "",
+        tip: form.querySelector('input[name="tip"]').value,
+        transport: form.querySelector('input[name="transport"]:checked')?.value || "",
+        services: Array.from(form.querySelectorAll('input[name="services"]:checked')).map(i => i.value),
+        social: Array.from(form.querySelectorAll('input[name="social"]:checked')).map(i => i.value),
+        library: form.querySelector('input[name="library"]:checked')?.value || ""
+      };
 
       try {
         const response = await fetch("https://ue-code.eu/api/survey", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(surveyData),
+          body: JSON.stringify(surveyData)
         });
 
-        if (!response.ok) {
-          throw new Error(`Server returned status ${response.status}`);
-        }
+        if (!response.ok) throw new Error("Failed to submit survey");
 
         const result = await response.json();
         document.getElementById("responseDisplay").textContent = JSON.stringify(result, null, 2);
-      } catch (error) {
-        document.getElementById("responseDisplay").textContent = `Error: ${error.message}`;
+      } catch (err) {
+        document.getElementById("responseDisplay").textContent = "Error: " + err.message;
       }
     });
   </script>
 </body>
 </html>
-
